@@ -1,0 +1,67 @@
+# Cell 10 — Write requirements.txt and README.md
+requirements = """
+fastapi
+uvicorn[standard]
+sentence-transformers
+faiss-cpu
+trafilatura
+beautifulsoup4
+requests
+transformers[sentencepiece]
+streamlit
+httpx
+python-dotenv
+python-multipart
+"""
+
+with open("requirements.txt", "w", encoding="utf-8") as f:
+    f.write(requirements.strip() + "\n")
+
+readme = """
+# Website Retrieval Assignment — RAG Q&A System
+
+## Overview
+This project builds a Retrieval-Augmented Generation (RAG) system that:
+- indexes website content,
+- stores it in a FAISS vector database,
+- answers user questions via a FastAPI backend,
+- provides a Streamlit UI for interaction,
+- returns answers with citations linking to the original pages.
+
+## Files
+- `app.py` — FastAPI server (endpoints `/api/v1/index` and `/api/v1/chat`).
+- `streamlit_app.py` — Minimal Streamlit UI.
+- Notebook cells — helper functions (embedding, indexing, retrieval).
+- `requirements.txt` — required Python packages.
+- `rag_data/` — folder where the FAISS index and metadata are stored after indexing.
+
+## Local setup
+1. Create a Python venv and activate it.
+2. `pip install -r requirements.txt`
+3. Set an API token:
+   - Linux/macOS: `export API_TOKEN="my_secret_token"`
+   - Windows: `set API_TOKEN="my_secret_token"`
+4. Optionally set OpenAI API key: `export OPENAI_API_KEY="sk-..."`
+5. Start the API server (from project root): `uvicorn app:app --reload --port 8000`
+    - NOTE: For the app to use the same process objects from the notebook, start uvicorn from the notebook environment
+      OR ensure the helper functions are available to the app (current approach is optimized for running server from notebook).
+6. Start Streamlit: `streamlit run streamlit_app.py --server.port 8501`
+
+## Usage
+- Index URLs: POST `/api/v1/index` with JSON `{"url":["https://example.com"]}` and header `X-API-KEY: your_token`.
+- Chat: POST `/api/v1/chat` with JSON `{"messages":[{"role":"user","content":"..."}]}` and header.
+
+## Deployment
+- Small projects: Railway or Heroku easy deploy (make sure to set API_TOKEN and OPENAI_API_KEY as env vars).
+- Production: Containerize with Docker and deploy to AWS ECS, EC2, or Google Cloud Run. Use persistent storage (S3 or managed DB) for metadata and vector snapshots.
+
+## Notes
+- OpenAI offers higher-quality generation; leave `OPENAI_API_KEY` unset to use the fallback HF model.
+- FAISS files are saved under `rag_data/` so the index is persistent.
+
+"""
+
+with open("README.md", "w", encoding="utf-8") as f:
+    f.write(readme.strip())
+
+print("Wrote requirements.txt and README.md")
